@@ -1,0 +1,223 @@
+# -*- yaml -*-
+#
+---
+
+BasedOnStyle: Google
+
+# The C++ standard can be changed via sbindent.cfg -cpp-standard for code that has to be C++03
+# compatible.
+Standard: c++17
+
+# See 'Maximum Column Policy (100 column rule)' in sbindent help
+ColumnLimit: 100
+
+# See 'Indent Width Policy' in sbindent help
+IndentWidth: 4
+
+# See 'Label Policy' in sbindent help
+AccessModifierOffset: -2
+IndentCaseLabels: false
+
+# See 'Blank Line Policy' in sbindent help
+MaxEmptyLinesToKeep: 3
+KeepEmptyLinesAtTheStartOfBlocks: true
+
+# There no particular reason to have Google's default of two spaces for trailing comments, one is
+# plenty sufficient and seems more natural when writing code. One is also the LLVM standard.
+SpacesBeforeTrailingComments: 1
+
+# See: 'No Single-Line Function Policy' in sbindent help
+AllowShortFunctionsOnASingleLine: Empty
+
+# Brace policy: concise. See sbindent help for rational.
+#BreakBeforeBraces: Attach    (Google default)
+
+# int* p. See "C++ Pointer and Reference Operator Placement" in sbcc help
+DerivePointerAlignment: false
+# PointerAlignment: Left (Google default)
+
+# Discourages return types on their own line
+# https://stackoverflow.com/questions/26635370/in-clang-format-what-do-the-penalties-do
+#PenaltyBreakBeforeFirstCallParameter: 1 (Google default)
+#PenaltyReturnTypeOnItsOwnLine: 200   (Google default)
+
+# Directory trees can opt into include sorting and increase the granularity of the include
+# categories (sections).  See 'C/C++ Include File Ordering Policy' in sbindent_standard help for
+# details.  Note, for include categories, the main header is assigned priority 0 by clang-format
+SortIncludes:  Never
+IncludeBlocks: Regroup
+IncludeCategories:
+       - Regex: '"version.h"'
+         Priority: -1
+       - Regex: '^<.*>$'
+         Priority: 1
+       - Regex: '^[^\/]+$'
+         Priority: 3
+       - Regex: '^.*$'
+         Priority: 2
+
+# See 'Template Policy' in sbindent help
+# AlwaysBreakTemplateDeclarations: true  (google default)
+
+# CommentPragmas prevent long lines from being reflowed.
+#  https://github.com/include-what-you-use/include-what-you-use/blob/master/docs/IWYUPragmas.md
+#  lint (from sbcc)
+#  TopTester (from sbtoptesters)
+#  LocalWords (from sbspell)
+CommentPragmas: '^( IWYU pragma:|lint|TopTester:|LocalWords)'
+
+# See 'Function Policy' in sbindent help
+#
+# BinPackParameters:
+#   Place all function parameters on a sign le line or one per line, i.e.
+#     int foo(int a, int b, ...)              # when line length <= 100
+#   or
+#     int foo(int a,                          # one per line when length > 100
+#             int b,
+#             ...)
+#   Bin packed parameters result in condensed lines, e.g.
+#     int foo(int a, int b, .... int f,
+#             int c, int d)
+#   and are harder to read
+#
+#  AllowAllParametersOfDeclarationOnNextLine:
+#    if true we get bin packing
+BinPackParameters: false
+AllowAllParametersOfDeclarationOnNextLine: false
+
+# See: 'Constructor Initializer Policy' in sbindent help
+# Use, "BreakConstructorInitializers: BeforeComma" to get constructor initializers one per line:
+#   class X {
+#     int a;
+#     int b;
+#
+#     public:
+#       X(int x, int y)
+#           : a{x}
+#           , b{y} {
+#       }
+#   };
+# Specifying "BreakConstructorInitializers: BeforeColon" causes them to appear all on one line.
+BreakConstructorInitializers: BeforeComma
+ConstructorInitializerAllOnOneLineOrOnePerLine: false
+
+# We need to reflow comments. clang-format will mess up comments if ReflowComments isn't on. Try on
+# //mw/Bvariant/matlab/src/simulink/sl_obj/blk_diag_engine_reg.cpp#52.  The reflow of comments is
+# decent. If column length is less than 100, the comments aren't touched.  If comments are greater
+# than 100 columns, they will be reflowed, so one should be careful to make doxygen verbatim
+# comments less that 100 columns.
+# ReflowComments: true           (Google default)
+
+# See 'No Single Line Conditionals/Loops Policy' in sbindent help
+AllowShortIfStatementsOnASingleLine: false
+AllowShortLoopsOnASingleLine: false
+
+# Penalty controls:
+# https://stackoverflow.com/questions/26635370/in-clang-format-what-do-the-penalties-do
+# Specifying
+#    PenaltyBreakBeforeFirstCallParameter: 0
+#    PenaltyReturnTypeOnItsOwnLine: 100000
+# results in
+#     return fFunction(
+#            boost::get<0>(std::forward<Tuple>(tuple)), boost::get<1>(std::forward<Tuple>(tuple)));
+# and without we get:
+#     return fFunction(boost::get<0>(std::forward<Tuple>(tuple)),
+#                      boost::get<1>(std::forward<Tuple>(tuple)));
+# Without the penalty items we get what we'd like the standard to be and is also consistent with the
+# Google standard.
+
+#---------------------------------#
+# no align consecutive statements #
+#---------------------------------#
+# We do not ask clang-format to align consecutive statements, e.g.
+#   int aaaa = 12;
+#   float b = 23000.0;
+#   std::string ccc = "23";
+#
+# Rational: This is not the default in Google, LLVM. Also in 2017 David Serr, Jonathan Jones, Chris
+#           Newbold, Scott French look at this and agreed with the LLVM standard. This only works
+#           well when all declarations and assignments fit on one line after alignment. When they
+#           don't fit, which is comment, it results in split lines to achieve the 100 column rule,
+#           which makes things harder to read. Also syntax highlighting reduces the need to have
+#           alignment when it would be nice.
+#
+# Note, with following, both the variable declarations and assignments are aligned, but
+# imagine what happens when the types or variables are long, the result isn't clean.
+#   AlignConsecutiveDeclarations: true
+#   AlignConsecutiveAssignments: true
+#   int         aaaa = 12;
+#   float       b    = 23000.0;
+#   std::string ccc  = "23";
+#
+# You can opt-in to alignment of consecutive statements on a directory tree, see sbindent help.
+
+#---------------------------------------------------------------------------------------------#
+# WhitespaceSensitiveMacros - macros which are whitespace-sensitive and should not be touched #
+#---------------------------------------------------------------------------------------------#
+# See matlab/src/sl_services/export/include/sl_services/test/exceptions.hpp
+#   #define EXPECT_EXCEPTION_WITH_ID(ID) .... #ID ....
+#   #define ASSERT_EXCEPTION_WITH_ID(ID) .... #ID ....
+# 'STRINGIZE', 'PP_STRINGIZE', 'BOOST_PP_STRINGIZE', 'NS_SWIFT_NAME', 'CF_SWIFT_NAME' come from BasedOnStyle: Google
+WhitespaceSensitiveMacros: ['EXPECT_EXCEPTION_WITH_ID', 'ASSERT_EXCEPTION_WITH_ID', 'STRINGIZE', 'PP_STRINGIZE', 'BOOST_PP_STRINGIZE', 'NS_SWIFT_NAME', 'CF_SWIFT_NAME']
+
+#-----------------#
+# StatementMacros #
+#-----------------#
+# For __pragma and _pragma, see g2946353 and:
+# https://learn.microsoft.com/en-us/cpp/preprocessor/pragma-directives-and-the-pragma-keyword
+StatementMacros:
+  - __pragma
+  - _pragma
+  - Q_UNUSED
+  - QT_REQUIRE_VERSION
+
+#---------------------------#
+# Enable compact namespaces #
+#---------------------------#
+#  namespace A { namespace B {
+#  }} // namespace A::B
+CompactNamespaces: true
+
+#--------------------------------#
+# Do not wrap JavaScript imports #
+#--------------------------------#
+# This makes identifying and merging imports easier as there will be one per line. For example,
+#  define(
+#     [
+#         'dojo/_base/declare',
+#         'foo/bar',
+#         'zoo/goo'
+#     ],
+#     function (arg1, arg2) {
+#         // body
+#     });
+JavaScriptWrapImports: false
+
+# See 'Braces Required Policy' in sbindent help
+# InsertBraces: true
+
+#---------------#
+# File encoding #
+#---------------#
+# LineEnding: LF
+# InsertNewlineAtEOF: true
+
+#---------------#
+# JSON specific #
+#---------------#
+
+# sbindent standard Maximum Column Policy suggests limiting 100, but you can go beyond 100 when it
+# helps with readability. For JSON wrapping at 100 can hurt readability, so we start with a
+# ColumnLimit of 0 which essentially means honor existing line breaks. One can override this if
+# desired.
+---
+Language: Json
+ColumnLimit: 0
+
+...
+
+# LocalWords:  llvm clangformat ASingle CDeclaration Newbold CBin CBreak Proto pb proto CRLF KJ LF
+# LocalWords:  Pragmas IWYU gtest CBlock CSpace Reflow STRINGIZE yaml
+# LocalWords:  CStyle reflowed lxe Initailizer aaaa
+# LocalWords:  ccc BNF google reflow github
+# LocalWords:  Bvariant Google's sbtoptesters
