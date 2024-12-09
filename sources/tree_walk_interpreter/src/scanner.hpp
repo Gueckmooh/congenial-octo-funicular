@@ -44,6 +44,17 @@ class Scanner {
         , m_current(m_start)
         , m_diagnosticReporter(diagnosticReporter) {}
 
+    const std::vector<Token>& scanTokens() {
+        while (!isAtEnd()) {
+            m_start = m_current;
+            scanToken();
+        }
+
+        m_tokens.emplace_back(TokenType::END_OF_FILE, std::string{}, std::any{}, m_loc);
+
+        return m_tokens;
+    }
+
   private:
     bool isAtEnd() const {
         return m_current >= m_source.end();
@@ -166,7 +177,7 @@ class Scanner {
     }
 
     void addToken(TokenType type, std::any literal) {
-        std::string text{m_start, m_current + 1};
+        std::string text{m_start, m_current};
         m_tokens.emplace_back(type, text, literal, m_loc);
     }
 

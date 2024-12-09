@@ -1,10 +1,12 @@
+#include <fstream>
 #include <iostream>
 #include <filesystem>
 #include <ostream>
+#include <sstream>
+#include <string>
 #include "printable.hpp"
+#include "scanner.hpp"
 #include "source_location.hpp"
-
-#include "token.hpp"
 
 namespace {
 
@@ -19,29 +21,51 @@ class ExitCode {
 
 class Lox {
   public:
+    Lox(tlox::DiagnosticReporter& diag)
+        : m_diagnosticReporter(diag) {}
+
     void runFile(const std::filesystem::path& scriptPath) {
-        (void)scriptPath;
+        if (!std::filesystem::exists(scriptPath)) {
+            m_diagnosticReporter.error("File does not exist", {});
+            return;
+        }
+        // Reading the entire file
+        std::ifstream ifs{scriptPath};
+        std::ostringstream oss;
+        oss << ifs.rdbuf();
+        std::string content = oss.str();
+
+        run(content);
     }
 
-    void runPrompt() {}
-
-    void report(const std::string& message,
-                const std::string& where,
-                const tlox::SourceLocation& loc) {
-        std::cerr << loc << " Error " << where << ": " << message << std::endl;
-        m_hadError = true;
-    }
-
-    void error(const std::string& message, const tlox::SourceLocation& loc) {
-        report(message, "", loc);
-    }
-
-    bool hadError() const {
-        return m_hadError;
+    void runPrompt() {
+        for (;;) {
+            std::string line;
+            std::cout << "> ";
+            std::getline(std::cin, line);
+            if (line.empty()) {
+                break;
+            }
+            run(line);
+        }
     }
 
   private:
-    bool m_hadError = false;
+    void run(const std::string& source) {
+        tlox::Scanner scanner{source, m_diagnosticReporter};
+        auto tokens = scanner.scanTokens();
+
+        if (m_diagnosticReporter.hadError()) {
+            return;
+        }
+
+        for (const auto& token : tokens) {
+            std::cout << token << std::endl;
+        }
+    }
+
+  private:
+    tlox::DiagnosticReporter& m_diagnosticReporter;
 };
 
 } // namespace
@@ -52,20 +76,17 @@ int main(int argc, char** argv) {
         return ExitCode::USAGE;
     }
 
-    Lox lox;
+    tlox::DiagnosticReporter diag;
+    Lox lox{diag};
     if (argc == 2) {
         lox.runFile(argv[1]);
     } else {
         lox.runPrompt();
     }
 
-    if (lox.hadError()) {
+    if (diag.hadError()) {
         return ExitCode::FAILURE;
     }
-
-    std::string foo = "foo bar baz";
-    std::string bar{foo.begin() + 4, foo.begin() + 7};
-    std::cout << bar << std::endl;
 
     return ExitCode::SUCCESS;
 }

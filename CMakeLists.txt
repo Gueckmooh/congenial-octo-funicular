@@ -48,3 +48,4 @@ define_property(TARGET PROPERTY DOC_INCLUDE_DIR
   BRIEF_DOCS "The include directory with headers to document")
 
 add_subdirectory(docs)
+add_subdirectory(examples)

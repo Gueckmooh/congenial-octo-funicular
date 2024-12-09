@@ -37,7 +37,7 @@ class Token : public details::Printable<Token> {
     }
 
     inline void print(std::ostream& os) const {
-        os << m_type << ' ' << m_lexeme;
+        os << m_type << ' ' << '\'' << m_lexeme << '\'';
     }
 
   private:
