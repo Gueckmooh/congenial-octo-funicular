@@ -4,25 +4,36 @@
 
 namespace grammar::cli {
 
-class Command {
+class ICommand {
   public:
-    Command(CLI::App& mainApp)
-        : m_mainApp(mainApp) {}
+    virtual ~ICommand() = default;
 
-    virtual ~Command() = default;
-
-    virtual void init() = 0;
     virtual int run() = 0;
-    virtual bool shouldRun() {
-        if (m_app) {
-            return m_app->parsed();
-        }
-        return false;
-    }
+};
+
+class SubCommand;
+
+class Command : public ICommand {
+  public:
+    virtual void init() = 0;
+    void registerSubCommand(std::unique_ptr<SubCommand> subCommand);
+    CLI::App& app();
+
+  protected:
+    void initSubCommands(CLI::App& app);
+
+  protected:
+    std::unique_ptr<CLI::App> m_app;
+    std::vector<std::unique_ptr<SubCommand>> m_subCommands;
+};
+
+class SubCommand : public ICommand {
+  public:
+    virtual void init(CLI::App& app) = 0;
+    bool shouldRun() const;
 
   protected:
     CLI::App* m_app;
-    CLI::App& m_mainApp;
 };
 
 } // namespace grammar::cli

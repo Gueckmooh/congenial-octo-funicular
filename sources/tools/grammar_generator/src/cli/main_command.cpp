@@ -2,13 +2,10 @@
 
 namespace grammar::cli {
 
-MainCommand::MainCommand()
-    : m_app("Grammar generator") {}
 
 void MainCommand::init() {
-    for (auto& subCommand : m_subCommands) {
-        subCommand->init();
-    }
+    m_app = std::make_unique<CLI::App>("Grammar generator");
+    initSubCommands(*m_app);
 }
 
 int MainCommand::run() {
@@ -20,14 +17,5 @@ int MainCommand::run() {
     std::cout << "No command run" << std::endl;
     return 1;
 }
-
-void MainCommand::registerSubCommand(std::unique_ptr<Command> subCommand) {
-    m_subCommands.emplace_back(std::move(subCommand));
-}
-
-CLI::App& MainCommand::app() {
-    return m_app;
-}
-
 
 } // namespace grammar::cli

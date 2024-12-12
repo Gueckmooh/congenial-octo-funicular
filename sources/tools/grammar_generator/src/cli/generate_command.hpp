@@ -6,11 +6,9 @@
 
 namespace grammar::cli {
 
-class GenerateCommand final : public Command {
+class GenerateCommand final : public SubCommand {
   public:
-    using Command::Command;
-
-    void init() override;
+    void init(CLI::App& app) override;
     int run() override;
 
   private:

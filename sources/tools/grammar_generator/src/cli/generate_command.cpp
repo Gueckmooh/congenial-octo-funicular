@@ -29,8 +29,8 @@ Source readAllFile(const std::filesystem::path& path) {
 
 } // namespace
 
-void GenerateCommand::init() {
-    m_app = m_mainApp.add_subcommand("generate", "Generate grammar");
+void GenerateCommand::init(CLI::App& app) {
+    m_app = app.add_subcommand("generate", "Generate grammar");
     m_app->add_option("--input-grammar,-i", m_grammarFile, "The grammar file to parse");
 }
 

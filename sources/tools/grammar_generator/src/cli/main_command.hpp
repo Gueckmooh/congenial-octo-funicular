@@ -1,35 +1,24 @@
 #pragma once
 
-#include <vector>
 #include <memory>
-
-#include "CLI/CLI.hpp"
+#include <concepts>
 
 #include "command.hpp"
 
 namespace grammar::cli {
 
-class MainCommand {
+class MainCommand final : public Command {
   public:
-    MainCommand();
-
-    void init();
-    int run();
-
-    void registerSubCommand(std::unique_ptr<Command> subCommand);
-    CLI::App& app();
-
-  private:
-    CLI::App m_app;
-    std::vector<std::unique_ptr<Command>> m_subCommands;
+    void init() override;
+    int run() override;
 };
 
-template <typename... SubCommandsT>
+template <std::derived_from<SubCommand>... SubCommandsT>
 inline constexpr std::unique_ptr<MainCommand> makeMainCommand() {
     auto command = std::make_unique<MainCommand>();
     (
         [&]() {
-            auto subCommand = std::make_unique<SubCommandsT>(command->app());
+            auto subCommand = std::make_unique<SubCommandsT>();
             command->registerSubCommand(std::move(subCommand));
         }(),
         ...);
