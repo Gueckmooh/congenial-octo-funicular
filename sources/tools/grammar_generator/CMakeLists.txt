@@ -3,14 +3,14 @@ add_executable(grammar_generator)
 file(GLOB_RECURSE SOURCES src/*.cpp)
 target_sources(grammar_generator PRIVATE ${SOURCES})
 
-add_subdirectory(tree-sitter-grammar)
-
 target_link_libraries(grammar_generator
   PRIVATE
   crafting_interpreters::warnings
   crafting_interpreters::options
 
   crafting_interpreters::utilities
+
+  CLI11::CLI11
 
   tree-sitter
   tree-sitter-grammar

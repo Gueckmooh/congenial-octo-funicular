@@ -1,2 +1,3 @@
 add_subdirectory(utilities)
+add_subdirectory(tools)
 add_subdirectory(tree_walk_interpreter)

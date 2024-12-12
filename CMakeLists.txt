@@ -43,7 +43,6 @@ crafting_interpreters_setup_dependencies()
 
 # Include the sources
 add_subdirectory(sources)
-add_subdirectory(tools/grammar_generator)
 
 define_property(TARGET PROPERTY DOC_INCLUDE_DIR
   BRIEF_DOCS "The include directory with headers to document")
