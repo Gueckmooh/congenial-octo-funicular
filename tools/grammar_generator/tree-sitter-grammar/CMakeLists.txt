@@ -29,6 +29,11 @@ if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/scanner.c)
   target_sources(tree-sitter-grammar PRIVATE src/scanner.c)
 endif()
 target_include_directories(tree-sitter-grammar PRIVATE src)
+target_include_directories(tree-sitter-grammar
+  ${WARNING_GUARDS}
+  PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+)
 
 target_compile_definitions(tree-sitter-grammar PRIVATE
                            $<$<BOOL:${TREE_SITTER_REUSE_ALLOCATOR}>:TREE_SITTER_REUSE_ALLOCATOR>
@@ -41,7 +46,7 @@ set_target_properties(tree-sitter-grammar
                       SOVERSION "${TREE_SITTER_ABI_VERSION}.${PROJECT_VERSION_MAJOR}"
                       DEFINE_SYMBOL "")
 
-configure_file(bindings/c/tree-sitter-grammar.pc.in
+configure_file(include/tree-sitter-grammar/tree-sitter-grammar.pc.in
                "${CMAKE_CURRENT_BINARY_DIR}/tree-sitter-grammar.pc" @ONLY)
 
 include(GNUInstallDirs)

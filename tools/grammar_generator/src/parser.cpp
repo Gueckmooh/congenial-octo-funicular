@@ -5,7 +5,7 @@
 #include "utils.hpp"
 #include "tree.hpp"
 
-#include "../tree-sitter-grammar/bindings/c/tree-sitter-grammar.h"
+#include "tree-sitter-grammar/tree-sitter-grammar.h"
 
 namespace grammar::ts {
 
