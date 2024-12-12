@@ -1,5 +1,6 @@
 #pragma once
 
+#include <concepts>
 #include "CLI/CLI.hpp"
 
 namespace grammar::cli {
@@ -35,5 +36,17 @@ class SubCommand : public ICommand {
   protected:
     CLI::App* m_app;
 };
+
+template <std::derived_from<Command> CommandT, std::derived_from<SubCommand>... SubCommandsT>
+inline constexpr std::unique_ptr<CommandT> makeCommand() {
+    auto command = std::make_unique<CommandT>();
+    (
+        [&] constexpr {
+            auto subCommand = std::make_unique<SubCommandsT>();
+            command->registerSubCommand(std::move(subCommand));
+        }(),
+        ...);
+    return command;
+}
 
 } // namespace grammar::cli

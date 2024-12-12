@@ -9,7 +9,8 @@
 
 
 int main(int argc, char** argv) {
-    auto mainCmd = grammar::cli::makeMainCommand<grammar::cli::GenerateCommand>();
+    using namespace grammar;
+    auto mainCmd = cli::makeCommand<cli::MainCommand, cli::GenerateCommand>();
     mainCmd->init();
 
     CLI11_PARSE(mainCmd->app(), argc, argv);
