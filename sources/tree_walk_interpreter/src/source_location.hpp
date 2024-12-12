@@ -4,7 +4,7 @@
 #include <filesystem>
 #include <optional>
 
-#include "printable.hpp"
+#include "crafting_interpreters/utilities/printable.hpp"
 
 namespace tlox {
 

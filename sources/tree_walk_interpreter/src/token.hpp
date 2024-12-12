@@ -3,7 +3,7 @@
 #include <any>
 #include <ostream>
 
-#include "printable.hpp"
+#include "crafting_interpreters/utilities/printable.hpp"
 #include "source_location.hpp"
 #include "token_type.hpp"
 

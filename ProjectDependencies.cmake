@@ -15,4 +15,14 @@ function(crafting_interpreters_setup_dependencies)
   if(NOT TARGET CLI11::CLI11)
     cpmaddpackage("gh:CLIUtils/CLI11@2.4.2")
   endif()
+
+  if(NOT TARGET tree-sitter)
+    cpmaddpackage(
+      NAME tree-sitter
+      GIT_REPOSITORY https://github.com/tree-sitter/tree-sitter.git
+      VERSION 0.24.4
+      SOURCE_SUBDIR lib
+    )
+  endif()
+
 endfunction()

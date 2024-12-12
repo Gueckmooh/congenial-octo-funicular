@@ -4,7 +4,7 @@
 #include <ostream>
 #include <sstream>
 #include <string>
-#include "printable.hpp"
+#include "crafting_interpreters/utilities/printable.hpp"
 #include "scanner.hpp"
 #include "source_location.hpp"
 

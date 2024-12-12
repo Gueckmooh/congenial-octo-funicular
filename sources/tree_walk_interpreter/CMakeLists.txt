@@ -8,8 +8,10 @@ target_link_libraries(tlox
   crafting_interpreters::warnings
   crafting_interpreters::options
 
+  crafting_interpreters::utilities
+
   # Command line interface
-  # CLI11::CLI11
+  CLI11::CLI11
 )
 
 # Put it in build/bin

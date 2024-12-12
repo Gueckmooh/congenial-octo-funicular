@@ -1,0 +1,34 @@
+{
+  "grammars": [
+    {
+      "name": "grammar",
+      "camelcase": "Grammar",
+      "scope": "source.grammar",
+      "file-types": [
+        ".grammar"
+      ],
+      "injection-regex": "^grammar$"
+    }
+  ],
+  "metadata": {
+    "version": "0.1.0",
+    "license": "MIT",
+    "description": "Grammar grammar for tree-sitter",
+    "authors": [
+      {
+        "name": "Enzo Brignon"
+      }
+    ],
+    "links": {
+      "repository": "https://github.com/tree-sitter/tree-sitter-grammar"
+    }
+  },
+  "bindings": {
+    "c": true,
+    "go": true,
+    "node": false,
+    "python": false,
+    "rust": false,
+    "swift": false
+  }
+}
