@@ -16,6 +16,8 @@ class SubCommand;
 
 class Command : public ICommand {
   public:
+    ~Command();
+
     virtual void init() = 0;
     void registerSubCommand(std::unique_ptr<SubCommand> subCommand);
     CLI::App& app();

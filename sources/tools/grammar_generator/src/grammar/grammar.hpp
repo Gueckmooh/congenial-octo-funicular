@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <variant>
 #include <vector>
 #include <memory>
 #include <optional>
@@ -9,22 +10,29 @@
 
 namespace grammar {
 
-class Terminal : public tlox::details::Printable<Terminal> {
+class Symbol : public tlox::details::Printable<Symbol> {
   public:
-    Terminal(std::string name);
-
-    void print(std::ostream& os, std::size_t depth = 0) const;
+    Symbol(std::string name);
+    virtual ~Symbol() = default;
 
     std::string_view getName() const;
 
-  private:
+    virtual void print(std::ostream& os, std::size_t depth = 0) const = 0;
+
+  protected:
     std::string m_name;
 };
 
-class Rule : public tlox::details::Printable<Rule> {
+class Terminal final : public Symbol {
   public:
-    Rule(std::string name)
-        : m_name(std::move(name)) {}
+    using Symbol::Symbol;
+
+    void print(std::ostream& os, std::size_t depth = 0) const override;
+};
+
+class Rule final : public Symbol {
+  public:
+    using Symbol::Symbol;
 
     class Field;
     class Element : public tlox::details::Printable<Element> {
@@ -117,7 +125,7 @@ class Rule : public tlox::details::Printable<Rule> {
         }
     };
 
-    void print(std::ostream& os, std::size_t depth = 0) const {
+    void print(std::ostream& os, std::size_t depth = 0) const override {
         os << std::string(depth * 4, ' ') << "Rule " << m_name << "{\n";
         os << std::string(depth * 4, ' ') << "    " << *m_body << '\n';
         for (const auto& field : m_fields) {
@@ -126,24 +134,29 @@ class Rule : public tlox::details::Printable<Rule> {
         os << std::string(depth * 4, ' ') << "}";
     }
 
-    std::string m_name;
     std::shared_ptr<Element> m_body;
     std::vector<std::shared_ptr<Field>> m_fields;
 };
 
+using TerminalPtr = std::shared_ptr<Terminal>;
+using RulePtr = std::shared_ptr<Rule>;
+using SymbolPtr = std::shared_ptr<Symbol>;
+
 class Grammar : public tlox::details::Printable<Grammar> {
   public:
-    void addTerminal(Terminal terminal);
-    void addRule(Rule rule);
+    void addTerminal(TerminalPtr terminal);
+    void addRule(RulePtr rule);
 
-    const std::vector<Terminal>& getTerminals() const;
-    const std::vector<Rule>& getRules() const;
+    const std::vector<TerminalPtr>& getTerminals() const;
+    const std::vector<RulePtr>& getRules() const;
 
     void print(std::ostream& os, std::size_t depth = 0) const;
 
+    // std::variant< std::monostate> lookupSymbol();
+
   private:
-    std::vector<Terminal> m_terminals;
-    std::vector<Rule> m_rules;
+    std::vector<TerminalPtr> m_terminals;
+    std::vector<RulePtr> m_rules;
 };
 
 } // namespace grammar

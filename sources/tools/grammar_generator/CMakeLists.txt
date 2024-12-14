@@ -9,6 +9,7 @@ target_link_libraries(grammar_generator
   crafting_interpreters::options
 
   crafting_interpreters::utilities
+  crafting_interpreters::cpp_generator
 
   CLI11::CLI11
 
@@ -16,9 +17,15 @@ target_link_libraries(grammar_generator
   tree-sitter-grammar
 )
 
+set_target_properties(grammar_generator
+  PROPERTIES
+  CXX_SCAN_FOR_MODULES yes
+)
+
 target_include_directories(grammar_generator
   ${WARNING_GUARDS}
   PRIVATE
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
   ${tree-sitter_SOURCE_DIR}/include
 )
 

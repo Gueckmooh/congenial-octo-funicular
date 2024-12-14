@@ -22,9 +22,9 @@ terminal LESS_EQUAL;
 terminal GREATER;
 terminal GREATER_EQUAL;
 
-rule Expr -> Literal | Unary | Binary | Grouping ;
+// rule Expr -> Literal | Unary | Binary | Grouping ;
 rule Literal -> value = ( NUMBER | STRING | TRUE | FALSE | NIL ) ;
-rule Grouping -> LEFT_PAREN expr = Expr RIGHT_PAREN ;
-rule Unary -> operator = ( MINUS | BANG ) expr = Expr ;
-rule Binary -> Expr Operator Expr;
-rule Operator -> EQUAL_EQUAL | BANG_EQUAL;
+// rule Grouping -> LEFT_PAREN expr = Expr RIGHT_PAREN ;
+// rule Unary -> operator = ( MINUS | BANG ) expr = Expr ;
+// rule Binary -> Expr Operator Expr;
+// rule Operator -> EQUAL_EQUAL | BANG_EQUAL;

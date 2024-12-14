@@ -7,11 +7,9 @@
 #include <string>
 #include <cassert>
 
-#include "crafting_interpreters/utilities/printable.hpp"
-
 #include "grammar.hpp"
-#include "tree.hpp"
-#include "node.hpp"
+#include "ts/tree.hpp"
+#include "ts/node.hpp"
 
 namespace grammar {
 
@@ -49,15 +47,15 @@ class GrammarCompiler {
         }
     }
 
-    std::optional<Terminal> compileTerminal(const ts::Node& node) {
+    std::optional<TerminalPtr> compileTerminal(const ts::Node& node) {
         auto symbolNode = node.child("name");
         if (!symbolNode) {
             return std::nullopt;
         }
-        return Terminal{symbolNode->value()};
+        return std::make_shared<Terminal>(symbolNode->value());
     }
 
-    std::optional<Rule> compileRule(const ts::Node& node) {
+    std::optional<RulePtr> compileRule(const ts::Node& node) {
         auto maybeNameNode = node.child("name");
         auto maybeBody = node.child("body");
         if (!maybeNameNode || !maybeBody) {
@@ -65,13 +63,13 @@ class GrammarCompiler {
         }
         auto name = maybeNameNode->value();
 
-        Rule rule{name};
-        rule.m_body = parseRuleElement(*maybeBody, rule);
+        auto rule = std::make_shared<Rule>(name);
+        rule->m_body = parseRuleElement(*maybeBody, rule);
 
         return rule;
     }
 
-    std::shared_ptr<Rule::Element> parseRuleElement(const ts::Node& node, Rule& rule) {
+    std::shared_ptr<Rule::Element> parseRuleElement(const ts::Node& node, RulePtr rule) {
         auto type = node.type();
         if (type == "choice") {
             return parseChoice(node, rule);
@@ -89,7 +87,7 @@ class GrammarCompiler {
         return {};
     }
 
-    std::shared_ptr<Rule::Element> parseChoice(const ts::Node& node, Rule& rule) {
+    std::shared_ptr<Rule::Element> parseChoice(const ts::Node& node, RulePtr rule) {
         auto choice = std::make_shared<Rule::Choice>();
         for (const auto& child : node.children(true)) {
             choice->m_elts.emplace_back(parseRuleElement(child, rule));
@@ -101,7 +99,7 @@ class GrammarCompiler {
 
         return choice;
     }
-    std::shared_ptr<Rule::Element> parseSequence(const ts::Node& node, Rule& rule) {
+    std::shared_ptr<Rule::Element> parseSequence(const ts::Node& node, RulePtr rule) {
 
         auto choice = std::make_shared<Rule::Sequence>();
         for (const auto& child : node.children(true)) {
@@ -119,7 +117,7 @@ class GrammarCompiler {
         symRef->m_name = node.value();
         return symRef;
     }
-    std::shared_ptr<Rule::Element> parseAffectation(const ts::Node& node, Rule& rule) {
+    std::shared_ptr<Rule::Element> parseAffectation(const ts::Node& node, RulePtr rule) {
         auto maybeName = node.child("name");
         auto maybeValue = node.child("value");
         if (!maybeName || !maybeValue) {
@@ -130,7 +128,7 @@ class GrammarCompiler {
         field->m_name = maybeName->value();
 
         field->m_value = parseRuleElement(*maybeValue, rule);
-        rule.m_fields.push_back(field);
+        rule->m_fields.push_back(field);
 
         return field->m_value;
     }

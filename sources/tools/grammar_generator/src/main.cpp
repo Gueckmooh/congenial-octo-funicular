@@ -3,10 +3,8 @@
 
 #include "CLI/CLI.hpp"
 
-
 #include "cli/main_command.hpp"
 #include "cli/generate_command.hpp"
-
 
 int main(int argc, char** argv) {
     using namespace grammar;

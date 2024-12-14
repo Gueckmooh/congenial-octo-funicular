@@ -3,11 +3,14 @@
 
 #include "generate_command.hpp"
 
-#include "../parser.hpp"
-#include "../node.hpp"
-#include "../tree.hpp"
-#include "../grammar.hpp"
-#include "../grammar_compiler.hpp"
+#include "ts/parser.hpp"
+#include "ts/node.hpp"
+#include "ts/tree.hpp"
+
+#include "grammar/grammar.hpp"
+#include "grammar/grammar_compiler.hpp"
+
+import cpp_generator;
 
 namespace grammar::cli {
 
@@ -50,6 +53,13 @@ int GenerateCommand::run() {
     auto grammar = compiler.compile();
 
     std::cout << grammar << std::endl;
+
+    cpp_generator::ClassBuilder foo{"bla"};
+    foo.withField("int", "foo");
+    foo.withField("std::string", "bar");
+
+    cpp_generator::CodeGenerator gen(std::cout);
+    foo.generate(gen);
 
     return 0;
 }

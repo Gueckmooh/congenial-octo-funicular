@@ -2,6 +2,8 @@
 
 namespace grammar::cli {
 
+Command::~Command() = default;
+
 void Command::registerSubCommand(std::unique_ptr<SubCommand> subCommand) {
     m_subCommands.emplace_back(std::move(subCommand));
 }
