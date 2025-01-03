@@ -138,8 +138,8 @@ impl From<&Type> for String {
             Type::Struct(s) => s.clone(),
             Type::Variant(vec) => format!(
                 "std::variant<{}>",
-                vec.into_iter()
-                    .map(|v| Self::from(v))
+                vec.iter()
+                    .map(Self::from)
                     .collect::<Vec<_>>()
                     .join(", ")
             ),
@@ -152,7 +152,7 @@ impl From<&Type> for String {
                 "{} {}",
                 vec![is_const.then(|| String::from("const"))]
                     .into_iter()
-                    .filter_map(|v| v)
+                    .flatten()
                     .collect::<Vec<String>>()
                     .join(" "),
                 String::from(ty.as_ref())

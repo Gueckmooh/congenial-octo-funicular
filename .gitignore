@@ -1,6 +1,8 @@
 /build/
 /.cache/
 /compile_commands.json
+/sources/tools/grammar_grammar_generator_v5/target/
+/sources/tools/grammar_grammar_generator_v4/target/
 /sources/tools/grammar_grammar_generator_v3/target/
 /sources/tools/grammar_grammar_generator_v2/target/
 /sources/tools/grammar_grammar_generator/target/

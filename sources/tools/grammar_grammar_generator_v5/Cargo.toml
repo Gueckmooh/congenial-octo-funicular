@@ -1,0 +1,16 @@
+[package]
+name = "grammar_grammar_generator_v5"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = "1.0.95"
+convert_case = "0.6.0"
+
+[lints.clippy]
+pedantic = "warn"
+style = "warn"
+suspicious = "warn"
+correctness = "warn"
+complexity = "warn"
+perf = "warn"

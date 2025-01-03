@@ -31,7 +31,10 @@ pub fn convert_node_info(info: &NodeInfoJSON) -> Result<Struct> {
                 .is_empty()
                 .then(|| Variable::new("value", Type::String))
         })
-        .and_then(|v| Some(fields.push(v)));
+        .map(|v| {
+            fields.push(v);
+            
+        });
 
     let methods: Vec<Function> = fields.iter().map(generate_getter).collect();
     let methods: Vec<Function> = methods
@@ -45,8 +48,7 @@ pub fn convert_node_info(info: &NodeInfoJSON) -> Result<Struct> {
                 .iter()
                 .filter(|v| v.ty.is_vector())
                 .map(generate_add)
-                .collect::<Result<Vec<_>>>()?
-                .into_iter(),
+                .collect::<Result<Vec<_>>>()?,
         )
         .collect();
 

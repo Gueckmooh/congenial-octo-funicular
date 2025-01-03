@@ -41,7 +41,7 @@ impl GenCPP2 for Function {
     fn gen_cpp<W: Write>(&self, gen: &mut CPPGen<W>) -> Result<()> {
         let attrs: Vec<String> = vec![self.is_const.then_some(String::from("const"))]
             .into_iter()
-            .filter_map(|v| v)
+            .flatten()
             .collect();
         gen.open_function(
             &self.name,
