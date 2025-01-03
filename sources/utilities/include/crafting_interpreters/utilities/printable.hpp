@@ -22,9 +22,9 @@ class Printable {
         return os;
     }
 
-    inline std::string toString(this const Derived* self) noexcept {
+    inline std::string toString(this const Derived& self) noexcept {
         std::stringstream ss;
-        self->print(ss);
+        self.print(ss);
         return ss.str();
     }
 };

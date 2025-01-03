@@ -10,6 +10,8 @@
 #include "grammar/grammar.hpp"
 #include "grammar/grammar_compiler.hpp"
 
+#include "generator/cxx_rule_generator.hpp"
+
 import cpp_generator;
 
 namespace grammar::cli {
@@ -54,12 +56,11 @@ int GenerateCommand::run() {
 
     std::cout << grammar << std::endl;
 
-    cpp_generator::ClassBuilder foo{"bla"};
-    foo.withField("int", "foo");
-    foo.withField("std::string", "bar");
+    grammar::generator::RuleCXXGenerator generator(grammar);
+    auto c = generator.generateClassFromRule(grammar.getRules().front());
 
     cpp_generator::CodeGenerator gen(std::cout);
-    foo.generate(gen);
+    c.generate(gen);
 
     return 0;
 }
