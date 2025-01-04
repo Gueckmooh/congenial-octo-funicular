@@ -1,8 +1,7 @@
 use anyhow::{ensure, Result};
-use convert_case::{Case, Casing};
 use std::fmt::{Display, Write};
 
-use crate::cpp::{Class, Field, Function, Type, Variable};
+use crate::cpp::{Class, Field, Function, SpecialFunctionKind, Type, Variable};
 
 #[macro_export]
 macro_rules! indent {
@@ -163,12 +162,7 @@ impl<W: Write> Generate<Variable> for Generator<W> {
 impl<W: Write> Generate<Field> for Generator<W> {
     fn generate(&mut self, value: &Field) -> Result<()> {
         self.generate(value.ty())?;
-        let name = if value.is_public() {
-            value.name().into()
-        } else {
-            format!("m_{}", value.name().to_case(Case::Camel))
-        };
-        add!(self, " {}", name)
+        add!(self, " {}", value.field_name())
     }
 }
 
@@ -250,7 +244,19 @@ impl<W: Write> Generate<Function> for Generator<W> {
     fn generate(&mut self, value: &Function) -> Result<()> {
         add_whitespace!(self)?;
         self.generate_function_signature(value)?;
-        add!(self, ";\n")
+        match value.special_kind() {
+            Some(special) => {
+                add!(self, " {{\n")?;
+                indent!(self);
+                match special {
+                    SpecialFunctionKind::Getter(field) => self.generate_getter_body(field),
+                    SpecialFunctionKind::Setter(field) => self.generate_setter_body(field),
+                }?;
+                dedent!(self);
+                add_line!(self, "}}")
+            }
+            None => add!(self, ";\n"),
+        }
     }
 }
 
@@ -267,6 +273,19 @@ impl<W: Write> Generator<W> {
                 .map(Generator::<String>::generate_str)
                 .collect::<Result<Vec<String>>>()?
                 .join(", ")
+        )
+    }
+
+    fn generate_getter_body(&mut self, field: &Field) -> Result<()> {
+        add_line!(self, "return {};", field.field_name())
+    }
+
+    fn generate_setter_body(&mut self, field: &Field) -> Result<()> {
+        add_line!(
+            self,
+            "{} = std::move({});",
+            field.field_name(),
+            field.name()
         )
     }
 }

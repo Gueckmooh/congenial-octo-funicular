@@ -10,6 +10,7 @@ fn main() -> Result<()> {
         "Foo",
         vec![
             Field::new("baz", Type::String, Visibility::Private),
+            Field::new("bocc", Type::String, Visibility::Private),
             Field::new("bar", Type::String, Visibility::Public),
         ],
     );

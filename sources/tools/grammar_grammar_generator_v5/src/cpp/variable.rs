@@ -47,6 +47,15 @@ impl Field {
     }
 
     #[must_use]
+    pub fn field_name(&self) -> String {
+        if self.is_public() {
+            self.name().into()
+        } else {
+            format!("m_{}", self.name().to_case(Case::Camel))
+        }
+    }
+
+    #[must_use]
     pub fn ty(&self) -> &Type {
         self.variable.ty()
     }

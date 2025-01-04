@@ -1,5 +1,6 @@
 use super::Field;
 
+#[derive(Debug, Clone)]
 pub struct Class {
     name: String,
     fields: Vec<Field>,
