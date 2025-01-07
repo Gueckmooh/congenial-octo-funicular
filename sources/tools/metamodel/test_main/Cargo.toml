@@ -1,0 +1,15 @@
+[package]
+name = "test_main"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow.workspace = true
+tera.workspace = true
+serde.workspace = true
+
+model.workspace = true
+cpp_generator.workspace = true
+
+[lints]
+workspace = true

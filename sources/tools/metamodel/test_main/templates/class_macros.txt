@@ -1,0 +1,3 @@
+{%- macro field_decl(name, type) %}
+    {{ type }} {{ name }};
+{%- endmacro field_decl -%}

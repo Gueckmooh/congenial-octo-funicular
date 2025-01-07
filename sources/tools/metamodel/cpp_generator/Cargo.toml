@@ -1,0 +1,15 @@
+[package]
+name = "cpp_generator"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow.workspace = true
+convert_case.workspace = true
+tera.workspace = true
+serde.workspace = true
+
+model.workspace = true
+
+[lints]
+workspace = true

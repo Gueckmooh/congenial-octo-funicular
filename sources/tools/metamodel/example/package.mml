@@ -1,0 +1,15 @@
+package geometry {
+
+#[derive(Print, Default, Copy)]
+class Point {
+    mut x: int32;
+    mut y: int32;
+}
+
+// #[derive(Clone, Print, Default, RefCounted)]
+// class Circle {
+//     center: Point;
+
+// }
+
+}
