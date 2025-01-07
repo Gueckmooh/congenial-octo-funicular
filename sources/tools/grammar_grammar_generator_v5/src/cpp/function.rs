@@ -6,12 +6,18 @@ pub struct Function {
     return_ty: Type,
     params: Vec<Variable>,
     special_kind: Option<SpecialFunctionKind>,
+    attributes: Attributes,
 }
 
 #[derive(Debug, Clone)]
 pub enum SpecialFunctionKind {
     Getter(Field),
     Setter(Field),
+}
+
+#[derive(Debug, Clone, Default)]
+pub struct Attributes {
+    pub is_const: bool,
 }
 
 impl Function {
@@ -21,12 +27,14 @@ impl Function {
         return_ty: Type,
         params: Vec<Variable>,
         special_kind: Option<SpecialFunctionKind>,
+        attributes: Attributes,
     ) -> Self {
         Self {
             name,
             return_ty,
             params,
             special_kind,
+            attributes,
         }
     }
 
@@ -72,6 +80,20 @@ impl Function {
     #[must_use]
     pub fn special_kind(&self) -> Option<&SpecialFunctionKind> {
         self.special_kind.as_ref()
+    }
+
+    #[must_use]
+    pub fn attributes(&self) -> &Attributes {
+        &self.attributes
+    }
+
+    #[must_use]
+    pub fn is_const(&self) -> bool {
+        self.attributes.is_const()
+    }
+
+    pub fn set_is_const(&mut self, is_const: bool) {
+        self.attributes.set_is_const(is_const);
     }
 }
 
@@ -130,5 +152,21 @@ impl SpecialFunctionKind {
         } else {
             Err(self)
         }
+    }
+}
+
+impl Attributes {
+    #[must_use]
+    pub fn r#const() -> Self {
+        Self { is_const: true }
+    }
+
+    #[must_use]
+    pub fn is_const(&self) -> bool {
+        self.is_const
+    }
+
+    pub fn set_is_const(&mut self, is_const: bool) {
+        self.is_const = is_const;
     }
 }

@@ -1,6 +1,6 @@
 use convert_case::{Case, Casing};
 
-use super::{Function, SpecialFunctionKind, Type, Visibility};
+use super::{Attributes, Function, SpecialFunctionKind, Type, Visibility};
 
 #[derive(Debug, Clone)]
 pub struct Variable {
@@ -88,6 +88,7 @@ impl Field {
             self.ty().clone().to_const_reference(),
             vec![],
             Some(SpecialFunctionKind::Getter(self.clone())),
+            Attributes::r#const(),
         )
     }
 
@@ -99,6 +100,7 @@ impl Field {
             Type::Void,
             vec![Variable::new(self.name(), self.ty().clone())],
             Some(SpecialFunctionKind::Setter(self.clone())),
+            Attributes::default(),
         )
     }
 }
