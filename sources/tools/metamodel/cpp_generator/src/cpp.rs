@@ -13,6 +13,8 @@ pub struct ClassAttributes {
     pub has_default: bool,
     pub is_copyable: bool,
     pub is_printable: bool,
+    pub is_ref_counted: bool,
+    pub may_be_null: bool,
 }
 
 #[derive(Serialize)]

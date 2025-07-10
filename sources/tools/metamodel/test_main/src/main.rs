@@ -10,6 +10,10 @@ fn get_package() -> Package {
             Variable::new("x", Type::Int32).as_mutable(),
             Variable::new("y", Type::Int32).as_mutable(),
         ],
+        model::class::Attributes {
+            is_ref_counted: true,
+            may_be_null: false,
+        },
     ));
 
     let circle_class = Rc::new(Class::new(
@@ -19,6 +23,10 @@ fn get_package() -> Package {
             Variable::new("center", Type::Type("Point".into())).as_mutable(),
             Variable::new("radius", Type::Int32).as_mutable(),
         ],
+        model::class::Attributes {
+            is_ref_counted: true,
+            may_be_null: true,
+        },
     ));
 
     Package::new(

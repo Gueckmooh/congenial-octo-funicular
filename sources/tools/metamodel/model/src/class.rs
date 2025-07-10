@@ -6,11 +6,27 @@ pub struct Class {
     name: String,
     methods: Vec<Rc<Function>>,
     fields: Vec<Rc<Variable>>,
+    attributes: Attributes,
+}
+
+#[derive(Debug, Clone, Default)]
+#[allow(clippy::struct_excessive_bools)]
+pub struct Attributes {
+    pub is_ref_counted: bool,
+    pub may_be_null: bool,
+    pub is_printable: bool,
+    pub has_default: bool,
+    pub can_copy: bool,
 }
 
 impl Class {
     #[must_use]
-    pub fn new<S: Into<String>>(name: S, methods: Vec<Function>, fields: Vec<Variable>) -> Self {
+    pub fn new<S: Into<String>>(
+        name: S,
+        methods: Vec<Function>,
+        fields: Vec<Variable>,
+        attributes: Attributes,
+    ) -> Self {
         let methods: Vec<Rc<Function>> = methods.into_iter().map(Rc::new).collect();
         let fields: Vec<Rc<Variable>> = fields
             .into_iter()
@@ -21,6 +37,7 @@ impl Class {
             name: name.into(),
             methods,
             fields,
+            attributes,
         }
     }
 
@@ -39,7 +56,8 @@ impl Class {
         &self.fields
     }
 
-    pub fn add_method(&mut self, method: Rc<Function>) {
-        self.methods.push(method);
+    #[must_use]
+    pub fn attributes(&self) -> &Attributes {
+        &self.attributes
     }
 }

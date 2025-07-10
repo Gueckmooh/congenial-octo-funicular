@@ -1,5 +1,5 @@
 [workspace]
-members = [ "cpp_generator","model", "test_main"]
+members = [ "cpp_generator","model", "parser", "test_main"]
 resolver = "2"
 
 [workspace.lints.clippy]
